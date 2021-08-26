@@ -5,7 +5,7 @@ use semver_parser::SemVer;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        eprintln!("Not enoough arguments!");
+        eprintln!("Not enough arguments!");
         eprintln!("Usage: {} VERSION", args[0]);
         process::exit(1);
     }
