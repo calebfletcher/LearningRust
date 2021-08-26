@@ -9,6 +9,12 @@ pub struct SemVer<'a> {
 
 impl<'a> SemVer<'a> {
     pub fn new(value: &str) -> Result<SemVer, &str> {
+        let build_split: Vec<&str> = value.split('+').collect();
+        let (version_without_build, build_metadata) = build_split.split_first().unwrap();
+
+        let prerelease_split: Vec<&str> = version_without_build.split('-').collect();
+        let (version_without_prerelease, prerelease) = prerelease_split.split_first().unwrap();
+
         let sv = SemVer {
             major: 0,
             minor: 0,
