@@ -14,4 +14,11 @@ fn main() {
         eprintln!("Unable to parse semver: {}", err);
         process::exit(1);
     });
+
+    println!("Major: {}", sv.major);
+    println!("Minor: {}", sv.minor);
+    println!("Patch: {}", sv.patch);
+    println!("Pre-Release: {:?}", sv.prerelease);
+    println!("Build Metadata: {:?}", sv.build_metadata);
+    println!("Is Development: {}", sv.is_development);
 }
