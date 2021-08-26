@@ -1,10 +1,10 @@
 pub struct SemVer<'a> {
-    major: u32,
-    minor: u32,
-    patch: u32,
-    prerelease: Vec<&'a str>,
-    build_metadata: Vec<&'a str>,
-    is_development: bool,
+    pub major: u32,
+    pub minor: u32,
+    pub patch: u32,
+    pub prerelease: Vec<&'a str>,
+    pub build_metadata: Vec<&'a str>,
+    pub is_development: bool,
 }
 
 impl<'a> SemVer<'a> {
