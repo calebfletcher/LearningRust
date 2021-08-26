@@ -23,7 +23,7 @@ impl<'a> SemVer<'a> {
             patch: version[2],
             prerelease: vec![],
             build_metadata: vec![],
-            is_development: false
+            is_development: version[0] == 0
         };
 
         Ok(sv)
@@ -34,7 +34,7 @@ impl<'a> SemVer<'a> {
             .split('.')
             .filter(|part| part.chars().count() > 0)
             .filter(|part| part.chars().all(char::is_numeric))
-            .filter(|part| part.chars().next().unwrap() != '0')
+            .filter(|part| (part.chars().count() == 1) || (part.chars().next().unwrap() != '0'))
             .map(|part| part.parse::<u32>().unwrap())
             .collect();
 
