@@ -13,6 +13,7 @@ impl AveragedCollection {
 
     pub fn push(&mut self, value: i32) {
         self.data.push(value);
+        self.update_average();
     }
 
     pub fn pop(&mut self) -> Option<i32> {
@@ -26,7 +27,8 @@ impl AveragedCollection {
     }
 
     fn update_average(&mut self) {
-        self.average = self.data.iter().sum();
+        let sum: i32 = self.data.iter().sum();
+        self.average = sum as f64 / self.data.len() as f64;
     }
 
     pub fn average(&self) -> f64 {
