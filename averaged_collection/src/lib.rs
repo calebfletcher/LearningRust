@@ -4,6 +4,13 @@ pub struct AveragedCollection {
 }
 
 impl AveragedCollection {
+    pub fn new() -> AveragedCollection {
+        AveragedCollection {
+            data: Vec::new(),
+            average: 0
+        }
+    }
+
     pub fn push(&mut self, value: i32) {
         self.data.push(value);
     }
