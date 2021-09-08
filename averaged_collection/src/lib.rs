@@ -25,7 +25,11 @@ impl AveragedCollection {
         }
     }
 
-    fn update_average<>(&mut self) {
+    fn update_average(&mut self) {
         self.average = self.data.iter().sum();
+    }
+
+    pub fn average(&self) -> i32 {
+        self.average
     }
 }
