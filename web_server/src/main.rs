@@ -23,12 +23,12 @@ fn handle_connection(mut stream: TcpStream) {
         .split_once("\r\n")
         .expect(r"Request did not contain a \r\n");
 
-    let request = http::Request::new(request).expect("Unable to parse request");
+    let request = http::request::Request::new(request).expect("Unable to parse request");
     let (headers, body) = remainder
         .split_once("\r\n\r\n")
         .expect("Unable to split headers and body form request");
 
-    let headers = http::Headers::new(headers);
+    let headers = http::headers::Headers::new(headers);
 
     println!("{:#?}", request);
     println!("{:#?}", headers);
