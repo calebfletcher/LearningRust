@@ -30,8 +30,14 @@ fn handle_connection(mut stream: TcpStream) {
 
     let headers = http::headers::Headers::new(headers);
 
+    let cookies = match headers.get("Cookie") {
+        Some(cookies_raw) => http::cookies::Cookies::new(cookies_raw),
+        None => None,
+    };
+
     println!("{:#?}", request);
     println!("{:#?}", headers);
+    println!("{:#?}", cookies);
     println!("{}", body);
 
     let body = fs::read_to_string("hello.html").expect("Unable to read response file");
