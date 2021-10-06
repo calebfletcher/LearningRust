@@ -24,7 +24,7 @@ impl Cookies {
         Some((String::from(key), String::from(value)))
     }
 
-    pub fn get(&self, k: &str) -> Option<&String> {
+    pub fn _get(&self, k: &str) -> Option<&String> {
         self.0.get(&k[..])
     }
 }
