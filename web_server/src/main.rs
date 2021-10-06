@@ -1,3 +1,4 @@
+use std::fs;
 use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
 
@@ -14,7 +15,12 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buf = [0; 1024];
     stream.read(&mut buf).expect("Unable to read from stream");
 
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    let body = fs::read_to_string("hello.html").expect("Unable to read response file");
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}",
+        body.len(),
+        body
+    );
 
     stream
         .write(response.as_bytes())
