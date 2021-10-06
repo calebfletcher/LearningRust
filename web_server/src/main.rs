@@ -14,7 +14,10 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buf = [0; 1024];
     stream.read(&mut buf).expect("Unable to read from stream");
 
-    let buf = String::from_utf8_lossy(&buf);
+    let response = "HTTP/1.1 200 OK\r\n\r\n";
 
-    println!("Request: {}", buf);
+    stream
+        .write(response.as_bytes())
+        .expect("Unable to write to stream");
+    stream.flush().expect("Unable to flush stream");
 }
