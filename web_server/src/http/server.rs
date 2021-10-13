@@ -34,14 +34,29 @@ impl Server {
         // Parse request
         let request = request::Request::new(&raw_request);
 
+        let request = match request {
+            Ok(request) => request,
+            Err((status, msg)) => {
+                Self::send_response(stream, status, msg);
+                return;
+            }
+        };
+
         // Debug request
-        println!("{:#?}", request);
+        // println!("{:#?}", request);
 
-        // Send response
-        let body = fs::read_to_string("hello.html").expect("Unable to read response file");
+        let (status, body) = match request.path.as_str() {
+            "/" => (
+                status::Status::Ok,
+                fs::read_to_string("hello.html").expect("Unable to read response file"),
+            ),
+            path => (status::Status::NotFound, format!("Not found: {}", path)),
+        };
 
-        let status = status::Status::Ok;
+        Self::send_response(stream, status, &body);
+    }
 
+    fn send_response(mut stream: TcpStream, status: status::Status, body: &str) {
         let response = format!(
             "HTTP/1.1 {}\r\nContent-Length: {}\r\n\r\n{}",
             status.as_response_code(),
