@@ -1,5 +1,7 @@
-#[derive(Debug)]
-enum Status {
+#[allow(clippy::enum_variant_names)]
+#[allow(dead_code)]
+#[derive(Debug, Copy, Clone)]
+pub enum Status {
     Continue = 100,
     SwitchingProtocol = 101,
     Processing = 102,
@@ -63,4 +65,78 @@ enum Status {
     LoopDetected = 508,
     NotExtended = 510,
     NetworkAuthenticationRequired = 511,
+}
+
+impl Status {
+    pub fn name(self) -> String {
+        String::from(match self {
+            Status::Continue => "Continue",
+            Status::SwitchingProtocol => "Switching Protocol",
+            Status::Processing => "Processing",
+            Status::EarlyHints => "Early Hints",
+            Status::Ok => "OK",
+            Status::Created => "Created",
+            Status::Accepted => "Accepted",
+            Status::NonAuthoritativeInformation => "Non-Authoritative Information",
+            Status::NoContent => "No Content",
+            Status::ResetContent => "Reset Content",
+            Status::ParitalContent => "Partial Content",
+            Status::MultiStatus => "Multi-Status",
+            Status::AlreadyReported => "Already Reported",
+            Status::IMUsed => "IM Used",
+            Status::MultipleChoice => "Multiple Choice",
+            Status::MovedPermanently => "Moved Permanently",
+            Status::Found => "Found",
+            Status::SeeOther => "See Other",
+            Status::NotModified => "Not Modified",
+            Status::UseProxy => "Use Proxy",
+            Status::Unused => "unused",
+            Status::TemporaryRedirect => "Temporary Redirect",
+            Status::PermanentRedirect => "Permanent Redirect",
+            Status::BadRequest => "Bad Request",
+            Status::Unauthorized => "Unauthorized",
+            Status::PaymentRequired => "Payment Required",
+            Status::Forbidden => "Forbidden",
+            Status::NotFound => "Not Found",
+            Status::MethodNotAllowed => "Method Not Allowed",
+            Status::NotAcceptable => "Not Acceptable",
+            Status::ProxyAuthenticationRequired => "Proxy Authentication Required",
+            Status::RequestTimeout => "Request Timeout",
+            Status::Conflict => "Conflict",
+            Status::Gone => "Gone",
+            Status::LengthRequired => "Length Required",
+            Status::PreconditionFailed => "Precondition Failed",
+            Status::PayloadTooLarge => "Payload Too Large",
+            Status::URITooLong => "URI Too Long",
+            Status::UnsupportedMediaType => "Unsupported Media Type",
+            Status::RangeNotSatisfiable => "Range Not Satisfiable",
+            Status::ExpectationFailed => "Expectation Failed",
+            Status::ImATeapot => "I'm a teapot",
+            Status::MisdirectedRequest => "Misdirected Request",
+            Status::UnprocessableEntity => "Unprocessable Entity",
+            Status::Locked => "Locked",
+            Status::FailedDependency => "Failed Dependency",
+            Status::TooEarly => "Too Early",
+            Status::UpgradeRequired => "Upgrade Required",
+            Status::PreconditionRequired => "Precondition Required",
+            Status::TooManyRequests => "Too Many Requests",
+            Status::RequestHeaderFieldsTooLarge => "Request Header Fields Too Large",
+            Status::UnavailableForLegalReasons => "Unavailable For Legal Reasons",
+            Status::InternalServerError => "Internal Server Error",
+            Status::NotImplemented => "Not Implemented",
+            Status::BadGateway => "Bad Gateway",
+            Status::ServiceUnavailable => "Service Unavailable",
+            Status::GatewayTimeout => "Gateway Timeout",
+            Status::HTTPVersionNotSupported => "HTTP Version Not Supported",
+            Status::VariantAlsoNegotiates => "Variant Also Negotiates",
+            Status::InsufficientStorage => "Insufficient Storage",
+            Status::LoopDetected => "Loop Detected",
+            Status::NotExtended => "Not Extended",
+            Status::NetworkAuthenticationRequired => "Network Authentication Required",
+        })
+    }
+
+    pub fn as_response_code(self) -> String {
+        format!("{} {}", self as u32, self.name())
+    }
 }

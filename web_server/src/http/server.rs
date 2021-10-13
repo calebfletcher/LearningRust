@@ -3,6 +3,7 @@ use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
 
 use crate::http::request;
+use crate::http::status;
 
 pub struct Server {
     listener: TcpListener,
@@ -38,8 +39,12 @@ impl Server {
 
         // Send response
         let body = fs::read_to_string("hello.html").expect("Unable to read response file");
+
+        let status = status::Status::Ok;
+
         let response = format!(
-            "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}",
+            "HTTP/1.1 {}\r\nContent-Length: {}\r\n\r\n{}",
+            status.as_response_code(),
             body.len(),
             body
         );
