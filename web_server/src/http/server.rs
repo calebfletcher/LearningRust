@@ -9,8 +9,8 @@ pub struct Server {
 }
 
 impl Server {
-    pub fn new(addr: &str) -> std::io::Result<Server> {
-        Ok(Server {
+    pub fn new(addr: &str) -> std::io::Result<Self> {
+        Ok(Self {
             listener: TcpListener::bind(addr)?,
         })
     }
@@ -20,11 +20,11 @@ impl Server {
             let stream = stream.unwrap();
             let peer_addr = stream.peer_addr().expect("Unable to get peer address");
             println!("Got connection from {}", peer_addr);
-            self.handle_connection(stream);
+            Self::handle_connection(stream);
         }
     }
 
-    fn handle_connection(&self, mut stream: TcpStream) {
+    fn handle_connection(mut stream: TcpStream) {
         // Read raw request
         let mut buf = [0; 1024];
         let bytes_read = stream.read(&mut buf).expect("Unable to read from stream");
@@ -44,7 +44,7 @@ impl Server {
             body
         );
         stream
-            .write(response.as_bytes())
+            .write_all(response.as_bytes())
             .expect("Unable to write to stream");
         stream.flush().expect("Unable to flush stream");
     }

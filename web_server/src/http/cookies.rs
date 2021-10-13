@@ -1,20 +1,19 @@
 use std::collections::HashMap;
-use std::iter::FromIterator;
 
 #[derive(Debug)]
 pub struct Cookies(HashMap<String, String>);
 
 impl Cookies {
-    pub fn new(raw_cookies: &str) -> Cookies {
+    pub fn new(raw_cookies: &str) -> Self {
         let cookies_list: Vec<Option<(String, String)>> =
-            raw_cookies.split(";").map(Cookies::decode_cookie).collect();
+            raw_cookies.split(';').map(Self::decode_cookie).collect();
 
-        if cookies_list.iter().any(|cookie| cookie.is_none()) {
-            Cookies { 0: HashMap::new() }
+        if cookies_list.iter().any(Option::is_none) {
+            Self { 0: HashMap::new() }
         } else {
-            let cookies_list = cookies_list.into_iter().map(|cookie| cookie.unwrap());
-            Cookies {
-                0: HashMap::from_iter(cookies_list),
+            let cookies_list = cookies_list.into_iter().map(Option::unwrap);
+            Self {
+                0: cookies_list.collect(),
             }
         }
     }
@@ -25,6 +24,6 @@ impl Cookies {
     }
 
     pub fn _get(&self, k: &str) -> Option<&String> {
-        self.0.get(&k[..])
+        self.0.get(k)
     }
 }
