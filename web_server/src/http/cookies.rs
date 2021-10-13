@@ -5,17 +5,17 @@ use std::iter::FromIterator;
 pub struct Cookies(HashMap<String, String>);
 
 impl Cookies {
-    pub fn new(raw_cookies: &str) -> Option<Cookies> {
+    pub fn new(raw_cookies: &str) -> Cookies {
         let cookies_list: Vec<Option<(String, String)>> =
             raw_cookies.split(";").map(Cookies::decode_cookie).collect();
 
         if cookies_list.iter().any(|cookie| cookie.is_none()) {
-            None
+            Cookies { 0: HashMap::new() }
         } else {
             let cookies_list = cookies_list.into_iter().map(|cookie| cookie.unwrap());
-            Some(Cookies {
+            Cookies {
                 0: HashMap::from_iter(cookies_list),
-            })
+            }
         }
     }
 

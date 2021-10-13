@@ -13,7 +13,7 @@ pub struct Request {
     target: String,
     version: String,
     headers: headers::Headers,
-    cookies: Option<cookies::Cookies>,
+    cookies: cookies::Cookies,
     body: String,
 }
 
@@ -29,10 +29,11 @@ impl Request {
 
         // Parse headers
         let headers = headers::Headers::new(headers);
-        let cookies = match headers.get("Cookie") {
-            Some(cookies_raw) => cookies::Cookies::new(cookies_raw),
-            None => None,
+        let cookies_raw = match headers.get("Cookie") {
+            Some(cookies_raw) => cookies_raw,
+            None => "",
         };
+        let cookies = cookies::Cookies::new(cookies_raw);
 
         // Parse request line
         let request_split: Vec<&str> = request_str.split_whitespace().collect();
