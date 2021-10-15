@@ -1,18 +1,23 @@
 use std::fs;
 use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
+use std::thread;
+use std::time::Duration;
 
 use crate::http::request;
 use crate::http::status;
+use crate::http::threadpool;
 
 pub struct Server {
     listener: TcpListener,
+    pool: threadpool::ThreadPool,
 }
 
 impl Server {
-    pub fn new(addr: &str) -> std::io::Result<Self> {
+    pub fn new(addr: &str) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {
             listener: TcpListener::bind(addr)?,
+            pool: threadpool::ThreadPool::new(4)?,
         })
     }
 
@@ -21,7 +26,9 @@ impl Server {
             let stream = stream.unwrap();
             let peer_addr = stream.peer_addr().expect("Unable to get peer address");
             println!("Got connection from {}", peer_addr);
-            Self::handle_connection(stream);
+            self.pool.execute(|| {
+                Self::handle_connection(stream);
+            });
         }
     }
 
@@ -50,6 +57,10 @@ impl Server {
                 status::Status::Ok,
                 fs::read_to_string("hello.html").expect("Unable to read response file"),
             ),
+            "/sleep" => {
+                thread::sleep(Duration::from_secs(5));
+                (status::Status::Ok, String::from("Sleep Endpoint"))
+            }
             path => (status::Status::NotFound, format!("Not found: {}", path)),
         };
 
