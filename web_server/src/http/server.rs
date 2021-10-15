@@ -22,7 +22,7 @@ impl Server {
     }
 
     pub fn start(&self) {
-        for stream in self.listener.incoming() {
+        for stream in self.listener.incoming().take(2) {
             let stream = stream.unwrap();
             let peer_addr = stream.peer_addr().expect("Unable to get peer address");
             println!("Got connection from {}", peer_addr);

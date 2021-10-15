@@ -15,7 +15,7 @@ impl fmt::Display for PoolCreationError {
 
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: mpsc::Sender<Job>,
+    sender: mpsc::Sender<Message>,
 }
 
 impl ThreadPool {
@@ -40,13 +40,16 @@ impl ThreadPool {
         F: FnOnce() + Send + 'static,
     {
         self.sender
-            .send(Box::new(f))
+            .send(Message::NewJob(Box::new(f)))
             .expect("Unable to submit job to workers.");
     }
 }
 
 impl Drop for ThreadPool {
     fn drop(&mut self) {
+        for _ in &self.workers {
+            self.sender.send(Message::Terminate).unwrap();
+        }
         for worker in &mut self.workers {
             if let Some(thread) = worker.thread.take() {
                 thread.join().unwrap();
@@ -61,15 +64,24 @@ struct Worker {
 }
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Self {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) -> Self {
         let thread = thread::spawn(move || loop {
             let job = receiver
                 .lock()
                 .unwrap()
                 .recv()
                 .expect("Unable to receive item from work queue");
-            println!("Worker {} got a job; executing.", id);
-            job();
+
+            match job {
+                Message::NewJob(job) => {
+                    println!("Worker {} got a job; executing.", id);
+                    job();
+                }
+                Message::Terminate => {
+                    println!("Worker {} shutting down.", id);
+                    break;
+                }
+            }
         });
         Self {
             id,
@@ -79,3 +91,8 @@ impl Worker {
 }
 
 type Job = Box<dyn FnOnce() + Send>;
+
+enum Message {
+    NewJob(Job),
+    Terminate,
+}
